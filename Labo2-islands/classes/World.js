@@ -39,6 +39,7 @@ export default class World {
       let div = document.createElement("div");
       div.classList.add("island");
       div.style.backgroundColor = island.getRandomColor();
+      div.innerHTML = island.getRandomName();
       document.body.appendChild(div);
       this.moveIsland(div);
     }
