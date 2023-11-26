@@ -21,6 +21,11 @@ export default class World {
             this.load();
             console.log("load");
         });
+
+        document.getElementById("btnClear").addEventListener("click", () => {
+            this.clearIslands();
+            console.log("clear");
+        });
     }
 
     save() {
