@@ -29,29 +29,32 @@ export default class World {
     }
 
     save() {
-        // save array islands to localstorage as string
-        // loop over all this.islands and save the names
-        const islandNames = this.islands.map((island) => {
+        // Save array islands to localstorage as string
+        // Loop over all this.islands and save the names, coordinates, and color
+        const islandData = this.islands.map((island) => {
             return {
                 name: island.name,
+                coordinates: island.coordinates,
+                color: island.color,
             };
         });
-        const islandNamesJSON = JSON.stringify(islandNames);
-        localStorage.setItem('islands', islandNamesJSON);
-        console.log(islandNames, islandNamesJSON);
+        const islandDataJSON = JSON.stringify(islandData);
+        localStorage.setItem('islands', islandDataJSON);
+        console.log(islandData, islandDataJSON);
         console.log(this.islands);
     }
 
-     load() {
-         // load islands from localstorage into array
-         // loop over the array and addIslands()
-         const islandNamesJSON = localStorage.getItem('islands');
-         if (islandNamesJSON) {
+    load() {
+        // Load islands from localstorage into array
+        // Loop over the array and addIslands()
+        const islandDataJSON = localStorage.getItem('islands');
+        if (islandDataJSON) {
             this.clearIslands();
-             const islandNames = JSON.parse(islandNamesJSON);
-             islandNames.forEach(name => this.addIsland(name));
-         }
-     }
+            const islandData = JSON.parse(islandDataJSON);
+            islandData.forEach(data => this.addIsland(data.name, data.coordinates, data.color));
+        }
+    }
+
     getCoordinates() {
         // return coordinates within the screen at random, feel free to change it up!
         let randomSign = Math.random() < 0.5 ? -1 : 1;
@@ -61,33 +64,34 @@ export default class World {
         };
     }
 
-    addIsland() {
-        // add the islands to the DOM
+    addIsland(name, coordinates, color) {
+        // Add the islands to the DOM
         let island = new Island();
         console.log("addIsland");
         let div = document.createElement("div");
         div.classList.add("island");
-        div.style.backgroundColor = island.getRandomColor();
-        let name = island.getRandomName();
-        div.innerHTML = name;
+        div.style.backgroundColor = color || island.getRandomColor();
+        div.innerHTML = name || island.getRandomName();
         document.body.appendChild(div);
-        this.islands.push({name});
-        this.moveIsland(div);
-    }
-
-    moveIsland(div) {
-        // this might be a good point to animate the islands with JS Animations API
-        let coords = this.getCoordinates();
-        div.animate([
-            { transform: `translate(0px, 0px)` },
-            { transform: `translate(${coords.x}px, ${coords.y}px)` }
-
-        ], {
-            duration: 1000,
-            iterations: 1,
-            fill: "forwards"
+        this.islands.push({ 
+            name: name || island.getRandomName(),
+            coordinates: coordinates || this.getCoordinates(),
+            color: div.style.backgroundColor,  // Hier de huidige kleur correct opslaan
         });
+        this.moveIsland(div, this.islands[this.islands.length - 1].coordinates);
     }
+
+moveIsland(div, coordinates) {
+    coordinates = coordinates || this.getCoordinates();
+    div.animate([
+        { transform: `translate(0px, 0px)` },
+        { transform: `translate(${coordinates.x}px, ${coordinates.y}px)` }
+    ], {
+        duration: 1000,
+        iterations: 1,
+        fill: "forwards"
+    });
+}
 
     clearIslands() {
         // Remove all islands from the DOM
