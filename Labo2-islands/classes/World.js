@@ -64,45 +64,48 @@ export default class World {
         };
     }
 
-    addIsland(name, coordinates, color) {
-        // Add the islands to the DOM
-        let island = new Island();
-        console.log("addIsland");
-        let div = document.createElement("div");
-        div.classList.add("island");
-        div.style.backgroundColor = color || island.getRandomColor();
-        div.innerHTML = name || island.getRandomName();
-        document.body.appendChild(div);
-        this.islands.push({ 
-            name: name || island.getRandomName(),
-            coordinates: coordinates || this.getCoordinates(),
-            color: div.style.backgroundColor,  // Hier de huidige kleur correct opslaan
-        });
-        this.moveIsland(div, this.islands[this.islands.length - 1].coordinates);
-    }
+addIsland(name, coordinates, color) {
+    // Add the islands to the DOM
+    let island = new Island();
+    console.log("addIsland");
+    let div = document.createElement("div");
+    div.classList.add("island");
+    div.style.backgroundColor = color || island.getRandomColor();
+    div.innerHTML = name || island.getRandomName();
+    document.body.appendChild(div);
 
-moveIsland(div, coordinates) {
-    coordinates = coordinates || this.getCoordinates();
-    div.animate([
-        { transform: `translate(0px, 0px)` },
-        { transform: `translate(${coordinates.x}px, ${coordinates.y}px)` }
-    ], {
-        duration: 1000,
-        iterations: 1,
-        fill: "forwards"
-    });
+    const islandData = {
+        name: div.innerHTML,
+        coordinates: coordinates || this.getCoordinates(),
+        color: div.style.backgroundColor,
+    };
+
+    this.islands.push(islandData);
+    this.moveIsland(div, islandData.coordinates);
 }
+
+    moveIsland(div, coordinates) {
+        coordinates = coordinates || this.getCoordinates();
+        div.animate([
+            { transform: `translate(0px, 0px)` },
+            { transform: `translate(${coordinates.x}px, ${coordinates.y}px)` }
+        ], {
+            duration: 1000,
+            iterations: 1,
+            fill: "forwards"
+        });
+    }
 
     clearIslands() {
         // Remove all islands from the DOM
         const islands = document.querySelectorAll(".island");
         islands.forEach((island) => {
-          island.remove();
+            island.remove();
         });
-    
+
         // Clear the islands array
         this.islands = [];
-      }
+    }
 
 
 }
